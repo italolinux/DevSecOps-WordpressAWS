@@ -31,4 +31,14 @@ VPC é como criar sua própria rede privada e isolada dentro da nuvem da AWS. É
   
 <img width="1615" height="719" alt="Captura de tela 2025-09-23 142807" src="https://github.com/user-attachments/assets/ad99013c-040f-4406-b734-e9409a1bc284" />
 
+* Nome: projectWordpress 
 
+* CIDR Block: 10.0.0.0/16 - Esta é a faixa de IPs
+
+## Estrutura de Subnets
+
+AZs: 2 zonas de disponibilidade (us-east-1a e us-east-1b)
+
+Subnets públicas: 2 (uma em cada AZ) - para recursos que precisam de internet
+
+Subnets privadas: 4 (duas em cada AZ) - para recursos protegidos
