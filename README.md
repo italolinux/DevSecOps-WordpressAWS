@@ -3,7 +3,7 @@ Este projeto tem como objetivo implementar uma arquitetura escalável e tolerant
 
 🛠️ Tecnologias e Serviços AWS Utilizados
 
-*Amazon EC2
+* Amazon EC2
 
 *Auto Scaling Group
 
