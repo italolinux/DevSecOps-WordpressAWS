@@ -1,19 +1,20 @@
 # DevSecOps-WordpressAWS
 Este projeto tem como objetivo implementar uma arquitetura escalável e tolerante a falhas para a plataforma WordPress na AWS, utilizando serviços gerenciados para garantir alta disponibilidade, desempenho e resiliência.
+
 🛠️ Tecnologias e Serviços AWS Utilizados
-Amazon EC2
 
-Auto Scaling Group
+*Amazon EC2
 
-Application Load Balancer (ALB)
+*Auto Scaling Group
 
-Amazon RDS (MySQL/MariaDB)
+*Application Load Balancer (ALB)
 
-Amazon EFS
+*Amazon RDS (MySQL/MariaDB)
 
-VPC, Subnets, Route Tables, Internet Gateway, NAT Gateway
+*Amazon EFS
 
-Security Groups
+*VPC, Subnets, Route Tables, Internet Gateway, NAT Gateway
 
-(Opcional) AWS CloudFormation / Terraform
+*Security Groups
+
 
