@@ -37,8 +37,10 @@ VPC é como criar sua própria rede privada e isolada dentro da nuvem da AWS. É
 
 ## Estrutura de Subnets
 
-AZs: 2 zonas de disponibilidade (us-east-1a e us-east-1b)
+* AZs: 2 zonas de disponibilidade (us-east-1a e us-east-1b)
 
-Subnets públicas: 2 (uma em cada AZ) - para recursos que precisam de internet
+* Subnets públicas: 2 (uma em cada AZ) - para recursos que precisam de internet
 
-Subnets privadas: 4 (duas em cada AZ) - para recursos protegidos
+* Subnets privadas: 4 (duas em cada AZ) - para recursos protegidos
+
+* Nat gateway : none
