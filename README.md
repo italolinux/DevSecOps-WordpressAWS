@@ -44,3 +44,5 @@ VPC é como criar sua própria rede privada e isolada dentro da nuvem da AWS. É
 *  Subnets privadas: 4 (duas em cada AZ) - para recursos protegidos
 
 *  Nat gateways : none (criarei à parte)
+
+
