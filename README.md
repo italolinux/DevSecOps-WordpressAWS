@@ -519,5 +519,5 @@ Para acessar a aplicação precisamos do DNS público do load balancer.
 
 <img width="1877" height="952" alt="Captura de tela 2025-09-28 213146" src="https://github.com/user-attachments/assets/208bb091-7bb0-4cd0-83c5-2fb089501db6" />
 
-**Observação**: O health check só vai dar íntegro depois que fizer as configurações do wordpress.
+**Observação**: O health check só vai dar íntegro depois que fizer as configurações do wordpress, antes disso ele retorna o código 302.
 
