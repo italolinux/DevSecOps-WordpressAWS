@@ -358,3 +358,166 @@ O Application Load Balancer (ALB) serve como o ponto de entrada principal da apl
 * Clique em "Create " na opção Application Load Balancer.
 
 <img width="1779" height="423" alt="Captura de tela 2025-09-28 191302" src="https://github.com/user-attachments/assets/0b42613e-6753-47af-a06f-98e66242317e" />
+
+* Nome: ALB-wordpress.
+
+* Load Balancer Schema: Internet-facing (Para aplicações públicas acessíveis via internet).
+
+* IP Address Type: IPv4.
+
+<img width="1884" height="723" alt="Captura de tela 2025-09-28 191319" src="https://github.com/user-attachments/assets/40d7ba61-8635-4bc2-8241-fc9548ac6a0c" />
+
+* VPC: projectWordpress-vpc
+
+* Availability Zones: us-east-1a e us-east-1b.
+
+* Subnets: subnet-public1-us-east-1a e subnet-public2-us-east-1b
+
+* Security Group: loadBalancer-sg.
+
+Agora precisamos criar um grupo de destino(target group), Os grupos de destino encaminham solicitações para destinos registrados individuais, como EC2 instâncias, usando o protocolo e o número da porta que você especificar.
+
+* Em Listeners and Routing, clique em Create target group, abrirá outra janela para criar.
+
+<img width="1915" height="787" alt="Captura de tela 2025-09-28 194745" src="https://github.com/user-attachments/assets/6c090fa0-561d-4c6e-a4f6-6ce7b566dbc1" />
+
+* Target Type: Instances (Registrar instâncias por ID).
+
+* Target Group Details:
+
+  * Name: ec2-targetgroup.
+    
+  * Protocol: HTTP.
+
+  * Port: 80.
+
+<img width="1899" height="735" alt="Captura de tela 2025-09-28 195029" src="https://github.com/user-attachments/assets/cfffa8c8-e3a2-4b39-8004-fcfcbb3970cc" />
+
+* IP address type: IPv4.
+
+* VPC: projetoWordpress-vpc.
+
+* Protocol version: HTTP1.
+
+* Health Check Settings:
+  * Protocol: HTTP ✅
+
+  * Path: /wp-login.php
+
+  * Port: traffic-port (usa a mesma porta do target group)
+
+* Advanced Health Check:
+  
+  * Healthy threshold: 5
+
+  * Unhealthy threshold: 2
+
+  * Timeout: 5 seconds
+
+  * Interval: 30 seconds
+
+* para finalizar clique em "Create target group".
+
+<img width="1756" height="716" alt="Captura de tela 2025-09-28 195108" src="https://github.com/user-attachments/assets/aa55f0d6-421a-47fa-9e90-598453008d80" />
+
+* Protocol: HTTP
+  
+* Port: 80
+
+* Forward to target group: ec2-targetgroup.
+
+* Finalize clicando em "Create Load balancer".
+
+# Etapa 6 Launch Template
+O Launch Template atua como um modelo padronizado para a criação de instâncias EC2, definindo de forma abrangente todas as configurações base necessárias. Este recurso da AWS armazena um "projeto" completo do servidor, assegurando que cada nova instância provisionada pelo Auto Scaling Group mantenha consistência absoluta em suas características, desde especificações técnicas até scripts de inicialização. As informações a seguir detalham o processo de configuração deste componente fundamental.
+
+* No painel da EC2, clique em "Modelos de execução".
+  
+* Depois clique em "Criar modelo de execução".
+
+<img width="1844" height="460" alt="Captura de tela 2025-09-28 204835" src="https://github.com/user-attachments/assets/58cde2cf-39a0-4979-bc39-48266a9c0f61" />
+
+* Name: wordpress-template.
+  
+* Description: Template para Ec2 com wordpress.
+  
+<img width="1215" height="752" alt="Captura de tela 2025-09-28 204848" src="https://github.com/user-attachments/assets/f5f1843b-0d4f-4341-8884-2f904c429205" />
+
+* Amazon Machine Image (AMI): Ubuntu Server 24.04 LTS.
+
+* Instance Type: t2.micro.
+
+<img width="1223" height="577" alt="Captura de tela 2025-09-28 204916" src="https://github.com/user-attachments/assets/cfd39894-1612-4d81-bb50-7a30ca8a678e" />
+
+* Key pair name: Adicione sua chave para acessar as instâncias.
+
+* Subnet: Don't include in launch template (definido no Auto Scaling).
+
+* Availability Zone: Don't include (gerenciado pelo Auto Scaling).
+
+* Security Group: ec2-sg.
+
+No final de **Advanced details** na opção user data, adicione nosso **userdata.sh** o script criado realiza as seguintes tarefas:
+
+* Atualiza o Sistema: Garante que o Ubuntu esteja com os pacotes mais recentes.
+* Instala o Docker e o Docker Compose: Prepara o ambiente para rodar os contêineres.
+* Monta o Sistema de Arquivos (EFS): Conecta a instância ao EFS para garantir que os arquivos do WordPress sejam persistentes e compartilhados.
+* Cria o docker-compose.yml: Gera dinamicamente o arquivo de orquestração dos contêineres, inserindo as credenciais do banco de dados RDS.
+* Inicia o Serviço: Executa o docker compose up -d para baixar a imagen e iniciar o container do WordPress.
+
+* Clique em "Create Launch template".
+
+# Etapa 7 Auto Scaling Group
+O Auto Scaling Group é um serviço da AWS que automaticamente adiciona ou remove instâncias EC2 com base na demanda da sua aplicação. Pense nele como um "gerente inteligente" que controla o número de servidores em funcionamento.
+
+* No console da EC2, no menu à esquerda, role até o final e clique em "Auto Scaling Groups".
+
+<img width="1123" height="356" alt="Captura de tela 2025-09-28 210855" src="https://github.com/user-attachments/assets/4f0d3075-e8b3-42df-a101-1d0fee377817" />
+
+* Auto Scaling group name: ASG-wordpress.
+
+* Launch template: wordpress-template.
+
+<img width="1145" height="555" alt="Captura de tela 2025-09-28 210942" src="https://github.com/user-attachments/assets/6de16fd8-7413-4b6d-9578-d812c30938c3" />
+
+* VPC: projectWordpress-vpc.
+
+* Availability Zones and Subnets: ```projectWordpress-subnet-private1-us-east-1a``` e ```projectWordpress-subnet-private2-us-east-1b```
+
+* Availability Zone Distribution: Balanced best effort (Se falhar em uma AZ, tenta em outra AZ saudável).
+
+<img width="1145" height="729" alt="Captura de tela 2025-09-28 211024" src="https://github.com/user-attachments/assets/c927db88-4bba-4f2f-90b0-b64b1a8d4ec9" />
+
+* Load Balancing: Attach to an existing load balancer.
+
+* Target Group Selection: ec2-targetgroup.
+
+* VPC Lattice: No VPC Lattice service.
+
+<img width="1089" height="757" alt="Captura de tela 2025-09-28 211107" src="https://github.com/user-attachments/assets/63759910-2d2b-4104-9e4b-7c8feb705040" />
+
+* Desired capacity: 2 instâncias.
+
+* Minimum capacity: 2 instâncias.
+
+* Maximum capacity: 4 instâncias.
+
+* Additional Capacity Settings: Default.
+
+* Clique em "Create auto scaling group".
+
+### Acessando a Aplicação
+Para acessar a aplicação precisamos do DNS público do load balancer.
+
+* No console da EC2, no menu à esquerda, clique em "Load Balancers".
+
+* Selecione o Load balancer criado anteriormente.
+
+* Em details procure o DNS público.
+
+* No navegador cole o DNS lembrando de usar o **http://** antes de colar.
+
+<img width="1877" height="952" alt="Captura de tela 2025-09-28 213146" src="https://github.com/user-attachments/assets/208bb091-7bb0-4cd0-83c5-2fb089501db6" />
+
+**Observação**: O health check só vai dar íntegro depois que fizer as configurações do wordpress.
+
